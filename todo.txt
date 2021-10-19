@@ -1,7 +1,14 @@
-TODO
+TODO:
 - Redirect user when they click on a specific exercise;
 
 - They should be redirected to a page with the exercise's name as the title, 
 input date, sets/reps and notes;
 
 - Add set button; Delete added set button; Submit button;
+
+TODO: 19.10.2021
+
+- Show exercise history(pull the data from mongo and show it on the page with 
+the exercise's name on the top)
+- If the exercise has no history then display a message saying that
+

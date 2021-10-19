@@ -1,6 +1,7 @@
 import React, { useState, createContext } from "react";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+import Navigation from "../Navigation";
 import AddExerciseModal from "./AddExerciseModal";
 import AddSets from "./AddSets";
 
@@ -24,6 +25,7 @@ export default function AddExercise() {
 
 	return (
 		<div>
+			<Navigation />
 			{/* If the user hasn't clicked on any exercise yet, stay on the 
 			page where he can create exerciseName; else show him the page
 			where he can log sets/reps for the selected exercise. */}
@@ -56,21 +58,20 @@ export default function AddExercise() {
 					) : (
 						<>Add new exercises.</>
 					)}
+					<ModalContext.Provider
+						value={{
+							value: [exerciseName, setExerciseName],
+							value2: [exerciseToDelete],
+							value3: [exercises, setExercises],
+							value4: [showDelete, setShowDelete],
+						}}
+					>
+						<AddExerciseModal />
+					</ModalContext.Provider>
 				</div>
 			) : (
 				<AddSets selectedExercise={selectedExercise} />
 			)}
-
-			<ModalContext.Provider
-				value={{
-					value: [exerciseName, setExerciseName],
-					value2: [exerciseToDelete],
-					value3: [exercises, setExercises],
-					value4: [showDelete, setShowDelete],
-				}}
-			>
-				<AddExerciseModal />
-			</ModalContext.Provider>
 		</div>
 	);
 }

@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Welcome from "./pages/Welcome";
-import Navigation from "./components/Navigation";
 import LogExercise from "./components/LogExercise";
 import AddExercise from "./components/AddExercise/AddExercise";
 
@@ -21,7 +20,6 @@ function App() {
 		<div className="App">
 			<CredentialsContext.Provider value={credentialsState}>
 				<Router>
-					<Navigation />
 					<Switch>
 						<Route exact path="/" component={Welcome} />
 
