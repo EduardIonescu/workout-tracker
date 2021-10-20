@@ -12,3 +12,18 @@ TODO: 19.10.2021
 the exercise's name on the top)
 - If the exercise has no history then display a message saying that
 
+TODO: 20.10.2021
+
+- Add delete / modify option for history
+for delete: probably grab the data from mongo and modify it in node based on id
+for modify: change the data based on id(might be too time consuming, if it is 
+then leave it for later)
+- Add those 2 inside a dropdown button
+
+- Clear form fields on submit in AddSets and let the user know he submitted 
+
+-- I left modify for later because it's dumb.
+
+TODO: 20.10.2021 EXTRA
+
+- Make a workout log page showing the exercises and their sets based on a day.

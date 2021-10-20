@@ -1,11 +1,20 @@
 import React, { useEffect, useState, useContext } from "react";
 import { CredentialsContext } from "../../App";
 
+// clean this up
 export default function ExerciseHistory({ selectedExercise }) {
+	return (
+		<div>
+			<DisplayHistory selectedExercise={selectedExercise} />
+		</div>
+	);
+}
+
+function DisplayHistory({ selectedExercise }) {
+	const [credentials] = useContext(CredentialsContext);
 	const [history, setHistory] = useState();
 	const [loading, setLoading] = useState(true);
-
-	const [credentials] = useContext(CredentialsContext);
+	const [refreshDelete, setRefreshDelete] = useState(false);
 
 	useEffect(() => {
 		const fetchHistory = async () => {
@@ -27,21 +36,7 @@ export default function ExerciseHistory({ selectedExercise }) {
 		fetchHistory();
 		setLoading(false);
 		// eslint-disable-next-line
-	}, []);
-	return (
-		<div>
-			{loading ? (
-				<>Loading...</>
-			) : !history || history.length === 0 ? (
-				<>You have no exercise history for this exercise.</>
-			) : (
-				<DisplayHistory history={history} />
-			)}
-		</div>
-	);
-}
-
-function DisplayHistory({ history }) {
+	}, [refreshDelete]);
 	const dateFormat = (date) => {
 		const options = {
 			weekday: "long",
@@ -57,35 +52,65 @@ function DisplayHistory({ history }) {
 		return new Date(date_2.date) - new Date(date_1.date);
 	};
 
-	const deleteSet = (id) => {
-		console.log(id);
+	const deleteSet = async (id) => {
+		console.log("we here");
+		try {
+			await fetch(
+				`http://localhost:4000/exercises/${selectedExercise}/delete`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Basic ${credentials.username}:${credentials.password}`,
+					},
+					body: JSON.stringify({ id: id, name: selectedExercise }),
+				}
+			);
+
+			setRefreshDelete(!refreshDelete);
+			alert("Set deleted!");
+		} catch (err) {
+			alert("An error occured, refresh the page.");
+		}
 	};
 
 	return (
 		<div>
-			{history.sort(sortByDate).map((entry) => {
-				return (
-					<div key={entry._id}>
-						<h3>
-							{dateFormat(entry.date)}{" "}
-							<span onClick={() => deleteSet(entry._id)}>X</span>
-						</h3>
-						<ul>
-							{entry.sets.map((set, index) => {
-								return (
-									<li key={index}>
-										<span>SET {index}:</span> {set.reps}{" "}
-										reps @ {set.weight} kg
+			{loading ? (
+				<>Loading...</>
+			) : !history || history.length === 0 ? (
+				<>You have no exercise history for this exercise.</>
+			) : (
+				history.sort(sortByDate).map((entry) => {
+					return (
+						<div key={entry._id}>
+							<h3>
+								{dateFormat(entry.date)}{" "}
+								<span onClick={() => deleteSet(entry._id)}>
+									X
+								</span>
+							</h3>
+							<ul>
+								{entry.sets.map((set, index) => {
+									return (
+										<li key={index}>
+											<span>SET {index + 1}:</span>{" "}
+											{set.reps} reps @ {set.weight} kg
+										</li>
+									);
+								})}
+								{entry.note.length > 0 ? (
+									<li>
+										<span>NOTES:</span> {entry.note}
 									</li>
-								);
-							})}
-							<li>
-								<span>NOTES:</span> {entry.note}
-							</li>
-						</ul>
-					</div>
-				);
-			})}
+								) : (
+									<></>
+								)}
+							</ul>
+						</div>
+					);
+				})
+			)}
 		</div>
 	);
 }

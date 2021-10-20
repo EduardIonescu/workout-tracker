@@ -22,6 +22,19 @@ export default function AddSets({ selectedExercise }) {
 
 	const [credentials] = useContext(CredentialsContext);
 
+	const resetInputs = () => {
+		setSets([]);
+		setNotes("");
+		setCurrentSet({
+			id: null,
+			reps: null,
+			weight: 0,
+		});
+		document.getElementById("reps").value = "";
+		document.getElementById("weight").value = "";
+		document.getElementById("notes").value = "";
+	};
+
 	useEffect(() => {
 		fetch(`http://localhost:4000/exercises`, {
 			method: "GET",
@@ -43,7 +56,7 @@ export default function AddSets({ selectedExercise }) {
 	const submit = (e) => {
 		e.preventDefault();
 
-		if (sets) {
+		if (sets.length !== 0) {
 			const tempSets = sets.map((set) => {
 				return { reps: set.reps, weight: set.weight };
 			});
@@ -56,6 +69,10 @@ export default function AddSets({ selectedExercise }) {
 				},
 				body: JSON.stringify(logToSend),
 			}).then(() => {});
+
+			resetInputs();
+
+			alert("Set submitted successfully!");
 		} else {
 			alert("Add sets");
 		}
@@ -63,14 +80,16 @@ export default function AddSets({ selectedExercise }) {
 
 	const addCompletedSet = (e) => {
 		e.preventDefault();
-		setSets([
-			...sets,
-			{
-				id: sets.length,
-				reps: currentSet.reps,
-				weight: currentSet.weight,
-			},
-		]);
+		if (currentSet.reps) {
+			setSets([
+				...sets,
+				{
+					id: sets.length,
+					reps: currentSet.reps,
+					weight: currentSet.weight,
+				},
+			]);
+		} else alert("Add reps to the set.");
 	};
 
 	useEffect(() => {
@@ -178,6 +197,7 @@ export default function AddSets({ selectedExercise }) {
 						<textarea
 							rows="2"
 							cols="30"
+							id="notes"
 							onChange={(e) => setNotes(e.target.value)}
 						></textarea>
 
